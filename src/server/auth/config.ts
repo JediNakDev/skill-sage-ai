@@ -66,6 +66,11 @@ export const authConfig = {
         id: user.id,
       },
     }),
+    redirect: ({ url, baseUrl: _baseUrl }) => {
+      const baseUrl = process.env.NEXT_AUTH_URL ?? _baseUrl;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      return baseUrl;
+    },
   },
   trustHost: true,
 } satisfies NextAuthConfig;
