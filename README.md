@@ -1,29 +1,86 @@
-# Create T3 App
+# Skill Sage AI
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+An AI-powered platform for skill assessment and personalized learning guidance.
 
-## What's next? How do I make an app with this?
+## Tech Stack
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Built on the [T3 Stack](https://create.t3.gg/):
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
+- [Next.js 15](https://nextjs.org) (App Router)
+- [NextAuth.js v5](https://next-auth.js.org) — authentication (LinkedIn provider)
+- [Drizzle ORM](https://orm.drizzle.team) + PostgreSQL
+- [tRPC](https://trpc.io) — end-to-end typesafe APIs
 - [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- [TypeScript](https://www.typescriptlang.org/)
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Prerequisites
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Node.js 20+
+- PostgreSQL database
+- LinkedIn OAuth credentials
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Setup
 
-## How do I deploy this?
+1. Install dependencies:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+   ```bash
+   npm install
+   ```
+
+2. Copy the environment file and fill in the values:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Required variables:
+   - `DATABASE_URL` — PostgreSQL connection string
+   - `AUTH_SECRET` — generate with `npx auth secret`
+   - `AUTH_LINKEDIN_ID` / `AUTH_LINKEDIN_SECRET` — LinkedIn OAuth credentials
+   - `AUTH_URL` — base URL of the deployment
+
+3. Push the database schema:
+
+   ```bash
+   npm run db:push
+   ```
+
+4. Start the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000).
+
+## Scripts
+
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server (Turbo) |
+| `npm run build` | Build for production |
+| `npm run start` | Start the production server |
+| `npm run check` | Lint + typecheck |
+| `npm run db:push` | Push schema changes to the database |
+| `npm run db:studio` | Open Drizzle Studio |
+| `npm run format:write` | Format the codebase with Prettier |
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js App Router pages and API routes
+├── server/
+│   ├── api/          # tRPC routers
+│   ├── auth/         # NextAuth configuration
+│   └── db/           # Drizzle schema and client
+├── trpc/             # tRPC client setup
+├── styles/           # Global styles
+└── env.js            # Validated environment variables
+```
+
+## Deployment
+
+See the T3 Stack deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify), or [Docker](https://create.t3.gg/en/deployment/docker).
