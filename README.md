@@ -1,73 +1,104 @@
 # Skill Sage AI
 
-An AI-powered platform for skill assessment and personalized learning guidance.
+A full-stack web app that compares your resume against a target job description and recommends the specific skills you should upgrade to close the gap — powered by a Llama LLM backend.
 
-## Tech Stack
+> 🏆 **Huawei Cloud Competition 2024** — advanced to Round 2
 
-Built on the [T3 Stack](https://create.t3.gg/):
+---
 
-- [Next.js 15](https://nextjs.org) (App Router)
-- [NextAuth.js v5](https://next-auth.js.org) — authentication (LinkedIn provider)
-- [Drizzle ORM](https://orm.drizzle.team) + PostgreSQL
-- [tRPC](https://trpc.io) — end-to-end typesafe APIs
-- [Tailwind CSS](https://tailwindcss.com)
-- [TypeScript](https://www.typescriptlang.org/)
+## ✨ Features
 
-## Getting Started
+- **Resume parsing** — upload your resume and extract structured experience/skills
+- **JD analysis** — paste any job description and extract required skills
+- **Gap analysis** — LLM-driven comparison highlighting missing or weak skills
+- **Skill upgrade recommendations** — ranked, actionable suggestions
+- **LinkedIn OAuth login** — sign in with your professional profile
+- **Stripe payment integration** — premium features behind paywall
+
+---
+
+## 🏗️ Architecture
+
+![Architecture Diagram](docs/architecture.png)
+
+```
+WWW → EIP → VPC
+              ├── Public Subnet (App Layer)
+              │     ├── ECS — Next.js + tRPC (frontend & backend)
+              │     └── HSS — host security
+              └── Private Subnet (Data Layer)
+                    └── RDS — PostgreSQL
+
+External APIs:
+  • LinkedIn API   (authentication)
+  • Stripe API     (payment gateway)
+  • Segmind API    (Llama inference)
+```
+
+**Security:** Database lives in a private subnet, unreachable from the public internet — all traffic goes through the application layer on ECS.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer        | Tech                                       |
+| ------------ | ------------------------------------------ |
+| Frontend     | Next.js 15, React, TypeScript, Tailwind    |
+| Backend      | tRPC, Node.js                              |
+| Database     | PostgreSQL (Huawei RDS) + Drizzle ORM      |
+| Auth         | NextAuth.js v5 (LinkedIn OAuth)            |
+| Payments     | Stripe                                     |
+| LLM          | Llama via Segmind API                      |
+| Infra        | Huawei Cloud (ECS, RDS, VPC, EIP, HSS)     |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 20+
-- PostgreSQL database
-- LinkedIn OAuth credentials
+- Node.js ≥ 20
+- npm (or pnpm/yarn)
+- PostgreSQL ≥ 14
 
 ### Setup
 
-1. Install dependencies:
+```bash
+git clone https://github.com/JediNakDev/skill-sage-ai.git
+cd skill-sage-ai
+npm install
+cp .env.example .env   # fill in keys below
+npm run db:push
+npm run dev
+```
 
-   ```bash
-   npm install
-   ```
+### Environment Variables
 
-2. Copy the environment file and fill in the values:
+```env
+DATABASE_URL=postgresql://...
+AUTH_LINKEDIN_ID=...
+AUTH_LINKEDIN_SECRET=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+SEGMIND_API_KEY=...
+AUTH_SECRET=...
+AUTH_URL=http://localhost:3000
+```
 
-   ```bash
-   cp .env.example .env
-   ```
+---
 
-   Required variables:
-   - `DATABASE_URL` — PostgreSQL connection string
-   - `AUTH_SECRET` — generate with `npx auth secret`
-   - `AUTH_LINKEDIN_ID` / `AUTH_LINKEDIN_SECRET` — LinkedIn OAuth credentials
-   - `AUTH_URL` — base URL of the deployment
+## 📦 Deployment (Huawei Cloud)
 
-3. Push the database schema:
+1. Provision **VPC** with one public and one private subnet
+2. Launch **ECS** instance in public subnet, attach **EIP**
+3. Provision **RDS PostgreSQL** in private subnet
+4. Enable **HSS** for host-level security
+5. Configure security groups: only ECS can reach RDS on port 5432
+6. Deploy app to ECS, point DNS at EIP
 
-   ```bash
-   npm run db:push
-   ```
+---
 
-4. Start the dev server:
-
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000).
-
-## Scripts
-
-| Script | Description |
-| --- | --- |
-| `npm run dev` | Start the dev server (Turbo) |
-| `npm run build` | Build for production |
-| `npm run start` | Start the production server |
-| `npm run check` | Lint + typecheck |
-| `npm run db:push` | Push schema changes to the database |
-| `npm run db:studio` | Open Drizzle Studio |
-| `npm run format:write` | Format the codebase with Prettier |
-
-## Project Structure
+## 📂 Project Structure
 
 ```
 src/
@@ -81,6 +112,14 @@ src/
 └── env.js            # Validated environment variables
 ```
 
-## Deployment
+---
 
-See the T3 Stack deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify), or [Docker](https://create.t3.gg/en/deployment/docker).
+## 👥 Team
+
+Built for Huawei Cloud Competition 2024.
+
+---
+
+## 📄 License
+
+MIT
